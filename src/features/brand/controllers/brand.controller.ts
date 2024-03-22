@@ -50,8 +50,14 @@ export class BrandController {
   async create(req: Request, res:Response) {
     try {
       const data = await this.brandService.create(req.body);
+      console.log(data);
+      if(!data) return this.httpResponse.NotFound(res, "No data found");
+
+      
       return this.httpResponse.Ok(res, data);
     } catch (e) {
+      console.log("Error al crear marca: ", e);
+      
       this.httpResponse.Error(res,e);
     }
   }

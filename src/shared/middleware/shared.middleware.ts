@@ -15,15 +15,30 @@ export class SharedMiddleware {
   }
 
   checkAdminRole(req:Request, res:Response, next:NextFunction) {
-    const { role } = req.user! as UserEntity;
-    if(role !== RoleType.ADMIN) return this.httpResponse.Unauthorized(res, "Permisson deneid");
-    return next();
+    const user = req.user! as UserEntity | undefined;
+
+    if(!user) {
+      return this.httpResponse.Unauthorized(res, "User not Authenticated")
+    }
+
+    if(user.role !== RoleType.ADMIN) {
+      return this.httpResponse.Unauthorized(res, "Permisson deneid");
+    } 
+    next();
   }
 
   checkCustomerRole(req: Request, res: Response, next: NextFunction) {
-    const { role } = req.user! as UserEntity;
-    if(role !== RoleType.CUSTOMER) return this.httpResponse.Unauthorized(res, "Permisson deneid");
-    return next();
+    const user = req.user! as UserEntity | undefined;
+
+    if(!user) {
+      return this.httpResponse.Unauthorized(res, "User not Authenticated")
+    }
+
+    if(user.role !== RoleType.CUSTOMER)  {
+      return this.httpResponse.Unauthorized(res, "Permisson deneid");
+    }
+    
+    next();
   }
 
 }
