@@ -12,14 +12,25 @@ export class ReviewRouter extends BaseRouter<ReviewController, ReviewMiddleware>
     this.router.get('/review/:id', (req,res) => this.controller.getById(req,res));
     this.router.post(
       '/review',
-      (req,res,next) => [ this.middleware.validator(req,res,next), ],
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ 
+        this.middleware.validator(req,res,next), 
+        this.middleware.checkCustomerRole(req,res,next),
+      ],
       (req,res) => this.controller.create(req,res)
       );
-    this.router.put('/review/:id', (req,res) => this.controller.update(req,res));
+    this.router.put(
+      '/review/:id',
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ 
+        this.middleware.checkCustomerRole(req,res,next),
+      ],
+      (req,res) => this.controller.update(req,res)
+    );
     this.router.delete(
-        '/review/:id',
-        this.middleware.passAuth('jwt'),
-        (req,res,next) => [ this.middleware.checkCustomerRole(req,res,next), ],
+      '/review/:id',
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ this.middleware.checkCustomerRole(req,res,next), ],
       (req,res) => this.controller.delete(req,res)
     );
   }

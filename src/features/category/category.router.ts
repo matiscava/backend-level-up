@@ -13,14 +13,25 @@ export class CategoryRouter extends BaseRouter<CategoryController, CategoryMiddl
     this.router.get('/category/:id/products', (req,res) => this.controller.getWithProduct(req,res));
     this.router.post(
       '/category',
-      (req,res,next) => [ this.middleware.validator(req,res,next), ],
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ 
+        this.middleware.validator(req,res,next),
+        this.middleware.checkAdminRole(req,res,next),
+      ],
       (req,res) => this.controller.create(req,res)
       );
-    this.router.put('/category/:id', (req,res) => this.controller.update(req,res));
+    this.router.put(
+      '/category/:id',
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ 
+        this.middleware.checkAdminRole(req,res,next),
+      ],
+      (req,res) => this.controller.update(req,res)
+    );
     this.router.delete(
-        '/category/:id',
-        this.middleware.passAuth('jwt'),
-        (req,res,next) => [ this.middleware.checkAdminRole(req,res,next), ],
+      '/category/:id',
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ this.middleware.checkAdminRole(req,res,next), ],
       (req,res) => this.controller.delete(req,res)
     );
   }

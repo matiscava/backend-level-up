@@ -1,6 +1,7 @@
 import morgan from "morgan";
 import express from "express";
 import cors from "cors";
+import passport from "passport";
 import { ConfigServer } from "./config/config";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
@@ -13,8 +14,8 @@ import { PurchaseRouter } from "./features/purchase/purchase.router";
 import { PuchaseProductRouter } from "./features/purchase/purchase-product.router";
 import { ReviewRouter } from "./features/review/review.router";
 import { UserRouter } from "./features/user/user.router";
-import { AddressRouter } from "./features/user/address.router";
-import { LoginStrategy } from "./features/auth/strategies/login.strategy";
+import { AddressRouter } from "./features/customer/address.router";
+import { JwtStrategy } from "./features/auth/strategies/jwt-passport.strategy";
 
 
 class ServerLevelUp extends ConfigServer {
@@ -26,7 +27,7 @@ class ServerLevelUp extends ConfigServer {
     this.app.use( express.json() );
     this.app.use( express.urlencoded({extended: true}) );
 
-    this.passportUse();
+    // this.passportUse();
     this.dbConnect();
 
     this.app.use( morgan('dev') );
@@ -35,6 +36,8 @@ class ServerLevelUp extends ConfigServer {
       methods: "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS",
       credentials: true,
     }) );
+    this.app.use(passport.initialize());
+    passport.use(JwtStrategy);
 
     this.app.use('/api', this.routers() );
     this.listen();
@@ -55,11 +58,10 @@ class ServerLevelUp extends ConfigServer {
     ];
   }
 
-  passportUse() {
-    return [
-      new LoginStrategy().use,
-    ];
-  }
+  // passportUse() {
+  //   return [
+  //   ];
+  // }
 
   async dbConnect() : Promise<DataSource | void> {
     return this.initConnect.then( 

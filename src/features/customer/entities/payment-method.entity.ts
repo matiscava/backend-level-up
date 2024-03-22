@@ -20,6 +20,9 @@ export class PaymentMethodEntity extends BaseEntity {
   @Column()
   alias?: string;
 
+  @Column()
+  isSelected!: boolean;
+
   @ManyToOne(() => CustomerEntity, (customer) => customer.paymentMethods )
   @JoinColumn({ name: "customer_id" })
   customer!: CustomerEntity;

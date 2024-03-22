@@ -1,62 +1,68 @@
-import * as jwt from "jsonwebtoken";
-import * as bcrypt from "bcrypt";
-import { ConfigServer } from "../../../config/config";
-import { UserService } from "../../user/services/user.service";
+import { compare } from "bcrypt";
+import { BaseService } from "../../../config/base/base.service";
+import { encrypt } from "../../../shared/utils/bcrypt.handle";
+import { UserDTO } from "../../user/dto/user.dto";
 import { UserEntity } from "../../user/entities/user.entity";
+import { UserService } from "../../user/services/user.service";
 import { PayloadToken } from "../interfaces/auth.interface";
+import jwt from "jsonwebtoken";
 
-export class AuthService extends ConfigServer {
+export class AuthService extends BaseService<UserEntity> {
   constructor(
-    private readonly userService: UserService = new UserService(),
-    private readonly jwtInstance = jwt,
-  ){
-    super();
+    private userService : UserService = new UserService(),
+  ) {
+    super(UserEntity);
   }
 
-  public async validateUser(
-    username: string,
-    password: string
-  ): Promise<UserEntity | null> {
+  sign(payload: jwt.JwtPayload, secret: any) {
+    return jwt.sign(payload, secret, {expiresIn: "1h"})
+  }
+
+  public async signUp ( user:UserDTO ) : Promise<UserEntity|null> {
+    const userByEmail = await this.userService.findByEmail(user.email);
+
+    if(userByEmail) return null;
+
+    const pass = await encrypt(user.password);
+    user.password = pass;
+
+    return await this.userService.create(user);
+  }
+
+  public async signIn (username:string, password:string) : Promise<UserEntity | null> {
     const userByEmail = await this.userService.findByEmail(username);
     const userByUsername = await this.userService.findByUsername(username);
 
-    if (userByUsername) {
-      const isMatch = await bcrypt.compare(password, userByUsername.password);
-      if (isMatch) {
-        return userByUsername;
-      }
+    if(userByEmail) {
+      const isMatch = await compare(password,userByEmail.password);
+      if (isMatch) return userByEmail;
     }
-    if (userByEmail) {
-      const isMatch = await bcrypt.compare(password, userByEmail.password);
-      if (isMatch) {
-        return userByEmail;
-      }
+
+    if(userByUsername) {
+      const isMatch = await compare(password,userByUsername.password);
+      if (isMatch) return userByUsername;
     }
 
     return null;
-  }  
-  
-  
-  sign(payload: jwt.JwtPayload, secret: any) {
-    return this.jwtInstance.sign(payload, secret, {expiresIn: "1hr"});
+
   }
 
-  public async generateJWT( user: UserEntity) : Promise<{accessToken: string, user: UserEntity}> {
-    console.log(`generateJWT: ${user}`);
-    
+  public async generateJWT(user:UserEntity) : Promise<{accessToken: string, user:UserEntity}>{
+    const userConsult = await this.userService.findWithRole(user.id, user.role);
 
-    const userConsult = await this.userService.findWithRole(user.id,user.role);
-
-    const payload: PayloadToken = {
+    const payload : PayloadToken = {
       role: userConsult!.role,
-      sub: userConsult!.id,
+      email: userConsult!.email,
+      id: userConsult!.id,
     };
 
-    if (userConsult) user.password = "XXXXXXX";
-    
+    if (userConsult) userConsult.password = "XXXXXXXXXX";
+
     return {
       accessToken: this.sign(payload, this.getEnvironment("JWT_SECRET")),
       user,
-    };
+    }
+
   }
-}
+
+} 

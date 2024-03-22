@@ -9,12 +9,13 @@ export class PaymentMethodMiddleware extends SharedMiddleware {
   }
 
   validator( req:Request, res:Response, next:NextFunction ) {
-    const { name, type, customer } = req.body;
+    const { name, type, customer, isSelected } = req.body;
 
     const valid = new PaymentMethodEntity();
     valid.name = name;
     valid.type = type;
     valid.customer = customer;
+    valid.isSelected = isSelected;
 
     validate(valid).then( (err) => {
       err.length

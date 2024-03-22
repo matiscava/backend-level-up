@@ -10,7 +10,7 @@ export class AddressMiddleware extends SharedMiddleware {
   };
 
   validator(req:Request, res:Response, next:NextFunction) {
-    const { name, street, city, state, postalCode, country, user, isSelected } = req.body;
+    const { name, street, city, state, postalCode, country, customer, isSelected } = req.body;
 
     const valid = new AddressDTO();
     valid.name = name;
@@ -19,7 +19,7 @@ export class AddressMiddleware extends SharedMiddleware {
     valid.state = state;
     valid.postalCode = postalCode;
     valid.country = country;
-    valid.user = user;
+    valid.customer = customer;
     valid.isSelected = isSelected;
 
     validate(valid).then( (err) => {

@@ -1,6 +1,5 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
 import { BaseEntity } from "../../../config/base/base.entity";
-import { AddressEntity } from "./address.entity";
 import { RoleType } from "../../../shared/enums/role-type.enum";
 import { Exclude } from "class-transformer";
 import { CustomerEntity } from "../../customer/entities/customer.entity";
@@ -28,10 +27,7 @@ export class UserEntity extends BaseEntity {
 
   @Exclude()
   @Column({select: false})
-  password!: string;
-
-  @OneToMany( () => AddressEntity, (address) => address.user )
-  addresses!: AddressEntity[];   
+  password!: string; 
 
   @Column({ type: "enum", enum: RoleType, nullable: false })
   role!: RoleType;

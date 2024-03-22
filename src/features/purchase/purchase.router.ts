@@ -13,6 +13,7 @@ export class PurchaseRouter extends BaseRouter<PurchaseController, PurchaseMiddl
     this.router.get('/pruchase/:id/purchase-product', (req,res) => this.controller.getWithProduct(req,res));
     this.router.post(
       '/pruchase',
+      this.middleware.passAuth('jwt'),
       (req,res,next) => [ 
         this.middleware.validator(req,res,next), 
         this.middleware.checkCustomerRole(req,res,next)
@@ -21,6 +22,7 @@ export class PurchaseRouter extends BaseRouter<PurchaseController, PurchaseMiddl
       );
     this.router.put(
       '/pruchase/:id',
+      this.middleware.passAuth('jwt'),
       (req,res,next) => [ this.middleware.checkCustomerRole(req,res,next) ],
       (req,res) => this.controller.update(req,res)
     );
