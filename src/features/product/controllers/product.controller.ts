@@ -10,7 +10,7 @@ export class ProductController {
 
   async getAll(req: Request, res:Response) {
     try {
-      const data = await this.productService.findAll();
+      const data = await this.productService.findAll();      
 
       if(!data.length) return this.httpResponse.NotFound(res, "Data not found");
 
@@ -69,6 +69,11 @@ export class ProductController {
   async create(req: Request, res:Response) {
     try {
       const data = await this.productService.create(req.body);
+
+      if(!data) {
+        return this.httpResponse.NotFound(res, "Error when creating data.");
+      }
+
       return this.httpResponse.Ok(res, data);
     } catch (e) {
       this.httpResponse.Error(res,e);

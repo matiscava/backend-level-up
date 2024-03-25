@@ -60,7 +60,7 @@ export class AuthService extends BaseService<UserEntity> {
 
     return {
       accessToken: this.sign(payload, this.getEnvironment("JWT_SECRET")),
-      user,
+      user: userConsult as UserEntity,
     }
 
   }

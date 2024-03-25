@@ -50,7 +50,6 @@ export class BrandController {
   async create(req: Request, res:Response) {
     try {
       const data = await this.brandService.create(req.body);
-      console.log(data);
       if(!data) return this.httpResponse.NotFound(res, "No data found");
 
       

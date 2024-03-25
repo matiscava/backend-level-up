@@ -15,7 +15,8 @@ import { PuchaseProductRouter } from "./features/purchase/purchase-product.route
 import { ReviewRouter } from "./features/review/review.router";
 import { UserRouter } from "./features/user/user.router";
 import { AddressRouter } from "./features/customer/address.router";
-import { JwtStrategy } from "./features/auth/strategies/jwt-passport.strategy";
+import { JwtStrategy } from "./features/auth/strategies/jwt.strategy";
+import { LoginStrategy } from "./features/auth/strategies/local.strategy";
 
 
 class ServerLevelUp extends ConfigServer {
@@ -26,8 +27,10 @@ class ServerLevelUp extends ConfigServer {
     super();
     this.app.use( express.json() );
     this.app.use( express.urlencoded({extended: true}) );
-
-    // this.passportUse();
+    
+    passport.use("jwt",JwtStrategy);
+    passport.use("login",LoginStrategy);
+    this.app.use(passport.initialize());
     this.dbConnect();
 
     this.app.use( morgan('dev') );
@@ -36,8 +39,6 @@ class ServerLevelUp extends ConfigServer {
       methods: "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS",
       credentials: true,
     }) );
-    this.app.use(passport.initialize());
-    passport.use(JwtStrategy);
 
     this.app.use('/api', this.routers() );
     this.listen();

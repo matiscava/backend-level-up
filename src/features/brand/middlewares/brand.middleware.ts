@@ -19,6 +19,7 @@ export class BrandMiddleware extends SharedMiddleware {
       if(err.length > 0) {
         this.httpResponse.Error(res,err)
       } else {        
+        console.log("se valido");
         next();
       } 
     } );

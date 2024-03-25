@@ -19,7 +19,7 @@ export class ProductRouter extends BaseRouter<ProductController, ProdructMiddlew
         this.middleware.checkAdminRole(req,res,next),
         this.middleware.validator(req,res,next) 
       ],
-      (req,res) => this.controller.getAll(req,res)
+      (req,res) => this.controller.create(req,res)
     );
     this.router.put(
       '/product/:id',

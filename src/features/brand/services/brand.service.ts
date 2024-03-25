@@ -25,7 +25,8 @@ export class BrandService extends BaseService<BrandEntity>{
   }
 
   async create(body:BrandDTO) : Promise<BrandEntity> {
-    return (await this.execRepository).save(body);
+    const data = (await this.execRepository).save(body);    
+    return data;
   }
 
   async update(id:string, infoUpdate:BrandDTO): Promise<UpdateResult> {

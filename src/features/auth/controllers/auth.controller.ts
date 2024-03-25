@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 import { HttpResponse } from "../../../shared/response/http.response";
 import { AuthService } from "../services/auth.service";
 import { UserEntity } from "../../user/entities/user.entity";

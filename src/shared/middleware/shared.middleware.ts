@@ -24,7 +24,8 @@ export class SharedMiddleware {
     if(user.role !== RoleType.ADMIN) {
       return this.httpResponse.Unauthorized(res, "Permisson deneid");
     } 
-    next();
+    
+    return next();
   }
 
   checkCustomerRole(req: Request, res: Response, next: NextFunction) {
@@ -38,7 +39,7 @@ export class SharedMiddleware {
       return this.httpResponse.Unauthorized(res, "Permisson deneid");
     }
     
-    next();
+    return next();
   }
 
 }
