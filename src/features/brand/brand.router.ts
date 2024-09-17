@@ -13,10 +13,18 @@ export class BrandRouter extends BaseRouter<BrandController,BrandMiddleware> {
     this.router.get('/brand/:id/products', (req,res) => this.controller.getWithProduct(req,res));
     this.router.post(
       '/brand',
-      (req,res,next) => [ this.middleware.validator(req,res,next), ],
+      this.middleware.passAuth('jwt'),
+      (req,res,next) => [ 
+        this.middleware.checkAdminRole(req,res,next),
+        this.middleware.validator(req,res,next),
+      ],
       (req,res) => this.controller.create(req,res)
       );
-    this.router.put('/brand/:id', (req,res) => this.controller.update(req,res));
+    this.router.put('/brand/:id', 
+    (req,res,next) => [ 
+      this.middleware.checkAdminRole(req,res,next),
+    ],
+    (req,res) => this.controller.update(req,res));
     this.router.delete(
         '/brand/:id',
         this.middleware.passAuth('jwt'),

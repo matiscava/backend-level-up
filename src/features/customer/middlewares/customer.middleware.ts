@@ -1,7 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SharedMiddleware } from "../../../shared/middleware/shared.middleware";
-import { CustomerService } from "../services/customer.service";
-import { NextFunction } from "express-serve-static-core";
 import { validate } from "class-validator";
 import { CustomerDTO } from "../dto/customer.dto";
 

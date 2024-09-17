@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SharedMiddleware } from "../../../shared/middleware/shared.middleware";
-import { NextFunction } from "express-serve-static-core";
 import { AddressDTO } from "../dto/address.dto";
 import { validate } from "class-validator";
 
@@ -10,7 +9,7 @@ export class AddressMiddleware extends SharedMiddleware {
   };
 
   validator(req:Request, res:Response, next:NextFunction) {
-    const { name, street, city, state, postalCode, country, user, isSelected } = req.body;
+    const { name, street, city, state, postalCode, country, customer, isSelected } = req.body;
 
     const valid = new AddressDTO();
     valid.name = name;
@@ -19,7 +18,7 @@ export class AddressMiddleware extends SharedMiddleware {
     valid.state = state;
     valid.postalCode = postalCode;
     valid.country = country;
-    valid.user = user;
+    valid.customer = customer;
     valid.isSelected = isSelected;
 
     validate(valid).then( (err) => {

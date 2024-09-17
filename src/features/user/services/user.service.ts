@@ -45,10 +45,8 @@ export class UserService extends BaseService<UserEntity> {
   async findWithRelation(id:string) : Promise<UserEntity | null> {
     return (await this.execRepository)
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.addresses', 'address')
       .leftJoinAndSelect('user.customer','customer')
       .where('user.id = :id', { id })
-      .andWhere('address.isSelected = :isSelected', { isSelected: true })
       .getOne();
   }
 

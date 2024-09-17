@@ -13,6 +13,7 @@ export class PaymentMethodRouter extends BaseRouter<PaymentMethodController, Pay
     this.router.get('/payment-method/customer/:customerId', (req,res) => this.controller.getByCustomerId(req,res));
     this.router.post(
       '/payment-method',
+      this.middleware.passAuth('jwt'),
       (req,res,next) => [ 
         this.middleware.validator(req,res,next), 
         this.middleware.checkCustomerRole(req,res,next),
@@ -21,6 +22,7 @@ export class PaymentMethodRouter extends BaseRouter<PaymentMethodController, Pay
       );
     this.router.put(
       '/payment-method/:id',
+      this.middleware.passAuth('jwt'),
       (req,res,next) => [ this.middleware.checkCustomerRole(req,res,next), ],
       (req,res) => this.controller.update(req,res)
     );

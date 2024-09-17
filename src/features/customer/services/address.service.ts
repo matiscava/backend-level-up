@@ -16,10 +16,10 @@ export class AddressService extends BaseService<AddressEntity> {
     return (await this.execRepository).findOneBy({ id });
   }
 
-  async findByUserId(userId:string) : Promise<AddressEntity[]> {
+  async findByCustomerId(customerId:string) : Promise<AddressEntity[]> {
     return (await this.execRepository)
       .createQueryBuilder('address')
-      .where('address.userId = :id', {userId})
+      .where('address.customer_id = :id', {id: customerId})
       .getMany();
   }
 

@@ -20,6 +20,9 @@ export class PaymentMethodDTO extends BaseDTO {
   alias?: string;
 
   @IsNotEmpty()
+  isSelected!: boolean;
+
+  @IsNotEmpty()
   customer!: CustomerEntity;
 
 }

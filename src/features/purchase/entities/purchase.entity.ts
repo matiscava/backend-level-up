@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "../../../config/base/base.entity";
 import { PurchaseStatus } from "../../../shared/enums/purchase-status.enum";
 import { CustomerEntity } from "../../customer/entities/customer.entity";
-import { AddressEntity } from "../../user/entities/address.entity";
+import { AddressEntity } from "../../customer/entities/address.entity";
 import { PurchaseProductEntity } from "./purchase-product.entity";
 
 @Entity({name: "purchase"})

@@ -16,6 +16,17 @@ export class CustomerService extends BaseService<CustomerEntity> {
     return (await this.execRepository).findOneBy({id});
   }
 
+  async findWitRelation( id:string ) : Promise<CustomerEntity | null> {
+    return (await this.execRepository)
+      .createQueryBuilder("customer")
+      .leftJoinAndSelect('customer.addresses', 'address')
+      .leftJoinAndSelect('customer.payment-method', 'payment-method')
+      .where({id})
+      .andWhere('address.isSelected = :isSelected', {isSelected : true})
+      .andWhere('payment-method.isSelected = :isSelected', {isSelected : true})
+      .getOne();
+  }
+
   async create(body:CustomerDTO) : Promise<CustomerEntity> {
     return (await this.execRepository).save(body);
   }

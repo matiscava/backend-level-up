@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SharedMiddleware } from "../../../shared/middleware/shared.middleware";
-import { NextFunction } from "express-serve-static-core";
 import { BrandDTO } from "../dto/brand.dto";
 import { validate } from "class-validator";
 
@@ -16,10 +15,13 @@ export class BrandMiddleware extends SharedMiddleware {
     valid.name = name;
     valid.image = image;
 
-    validate(valid).then( (err) => {
-      err.length 
-        ? this.httpResponse.Error(res,err)
-        : next();
+    validate(valid).then( (err) => {      
+      if(err.length > 0) {
+        this.httpResponse.Error(res,err)
+      } else {        
+        console.log("se valido");
+        next();
+      } 
     } );
 
   }

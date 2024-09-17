@@ -33,12 +33,12 @@ export class AddressController {
     }
   }
 
-  async getByUserId(req: Request, res:Response) {
-    const { userId } = req.params;
+  async getByCustomerId(req: Request, res:Response) {
+    const { customerId } = req.params;
     try {
-      const data = await this.addressService.findByUserId(userId);
+      const data = await this.addressService.findByCustomerId(customerId);
       
-      if(!data.length) return this.httpResponse.NotFound(res, `No data found with ID: ${userId}`);
+      if(!data.length) return this.httpResponse.NotFound(res, `No data found with ID: ${customerId}`);
 
       return this.httpResponse.Ok(res, data);
     } catch (e) {

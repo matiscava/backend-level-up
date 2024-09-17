@@ -4,6 +4,7 @@ import { UserEntity } from "../../user/entities/user.entity";
 import { PurchaseEntity } from "../../purchase/entities/purchase.entity";
 import { PaymentMethodEntity } from "./payment-method.entity";
 import { ReviewEntity } from "../../review/entities/review.entity";
+import { AddressEntity } from "./address.entity";
 
 @Entity({name: 'customer'})
 export class CustomerEntity extends BaseEntity {
@@ -22,4 +23,7 @@ export class CustomerEntity extends BaseEntity {
 
   @OneToMany(() => ReviewEntity, (review) => review.customer)
   reviews!: ReviewEntity[];
+
+  @OneToMany(() => AddressEntity, (address) => address.customer)
+  addresses!: AddressEntity[];
 }

@@ -10,17 +10,24 @@ export class AddressRouter extends BaseRouter<AddressController, AddressMiddlewa
   routes(): void {
     this.router.get('/address', (req,res) => this.controller.getAll(req,res));
     this.router.get('/address/:id', (req,res) => this.controller.getById(req,res));
-    this.router.get('/address/user/:userId', (req,res) => this.controller.getByUserId(req,res));
+    this.router.get('/address/customer/:customerId', (req,res) => this.controller.getByCustomerId(req,res));
     this.router.post(
       '/address',
-      (req,res,next) => [ this.middleware.validator(req,res,next), ],
+      (req,res,next) => [ 
+        this.middleware.validator(req,res,next), 
+        this.middleware.checkCustomerRole(req,res,next),
+      ],
       (req,res) => this.controller.create(req,res)
       );
-    this.router.put('/address/:id', (req,res) => this.controller.update(req,res));
+    this.router.put(
+      '/address/:id', 
+      (req,res,next) => [this.middleware.checkCustomerRole(req,res,next)],
+      (req,res) => this.controller.update(req,res)
+    );
     this.router.delete(
         '/address/:id',
         this.middleware.passAuth('jwt'),
-        (req,res,next) => [ this.middleware.checkAdminRole(req,res,next), ],
+        (req,res,next) => [ this.middleware.checkCustomerRole(req,res,next), ],
       (req,res) => this.controller.delete(req,res)
     );
   }

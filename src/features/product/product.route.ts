@@ -14,15 +14,24 @@ export class ProductRouter extends BaseRouter<ProductController, ProdructMiddlew
     this.router.get('/product/:id/reviews', (req,res) => this.controller.getByIdWithReviews(req,res))
     this.router.post(
       '/product', 
+      this.middleware.passAuth("jwt"),
       (req, res, next) => [ 
         this.middleware.checkAdminRole(req,res,next),
         this.middleware.validator(req,res,next) 
       ],
-      (req,res) => this.controller.getAll(req,res)
+      (req,res) => this.controller.create(req,res)
     );
-    this.router.put('/product/:id', (req,res) => this.controller.update(req,res));
+    this.router.put(
+      '/product/:id',
+      this.middleware.passAuth("jwt"),
+      (req, res, next) => [ 
+        this.middleware.checkAdminRole(req,res,next),
+      ],
+      (req,res) => this.controller.update(req,res)
+    );
     this.router.delete(
       '/product/:id',
+      this.middleware.passAuth("jwt"),
       (req, res, next) => [ 
         this.middleware.checkAdminRole(req,res,next),
       ],

@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SharedMiddleware } from "../../../shared/middleware/shared.middleware";
-import { NextFunction } from "express-serve-static-core";
 import { ProductDTO } from "../dto/product.dto";
 import { validate } from "class-validator";
 
@@ -24,9 +23,11 @@ export class ProdructMiddleware extends SharedMiddleware {
     valid.category = category;
 
     validate(valid).then( (err) => {
-      err.length
-        ? this.httpResponse.Error(res,err)
-        : next();
+      if(err.length > 0) {
+        return this.httpResponse.Error(res,err)
+      } else {        
+        next();
+      }
     } );
   }
 }

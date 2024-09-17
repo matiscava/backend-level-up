@@ -1,31 +1,28 @@
+import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
 import { AuthService } from "../services/auth.service";
-import { ExtractJwt, Strategy as JwtStr, StrategyOptions } from "passport-jwt";
+import { UserService } from "../../user/services/user.service";
 import { PayloadToken } from "../interfaces/auth.interface";
-import { PassportUse } from "../../../shared/utils/passport.handle";
 
-export class JwtStrategy extends AuthService {
-  constructor() {
-    super();
+const authService: AuthService = new AuthService();
+const userService: UserService = new UserService();
+
+const options: StrategyOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: authService.getEnvironment("JWT_SECRET") as string,
+  ignoreExpiration: false,
+};
+
+const JwtStrategy:Strategy = new Strategy(options, async (payload:PayloadToken, done) => { 
+  try {
+    const user = await userService.findById(payload.id);
+    if(user) {
+      return done(null, user);
+    }
+    return done(null, false);
+  } catch (e) {
+    console.error(`Error en la estrategia de jwt-passport`);
+    
   }
+})
 
-  async validate(payload: PayloadToken, done: any) {
-    return done(null, payload);
-  }
-
-  // get use() {
-  //   return PassportUse<
-  //     JwtStr, 
-  //     StrategyOptions, 
-  //     (payload: PayloadToken, done: any) => Promise<PayloadToken>
-  //   >(
-  //     "jwt", 
-  //     JwtStr, 
-  //     { 
-  //       jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
-  //       secretOrKey: this.getEnvironment("JWT_SECRET"),
-  //       ignoreExpiration: false,
-  //     },
-  //     this.validate
-  //   );
-  // }
-}
+export { JwtStrategy };
